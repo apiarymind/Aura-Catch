@@ -1,0 +1,34 @@
+﻿SUSPECT|bg.json|3|status_label, store_label, target_price
+SUSPECT|cs.json|3|status_label, store_label, target_price
+SUSPECT|da.json|3|status_label, store_label, target_price
+SUSPECT|de.json|3|status_label, store_label, target_price
+SUSPECT|de_AT.json|3|status_label, store_label, target_price
+SUSPECT|de_CH.json|3|status_label, store_label, target_price
+SUSPECT|de-AT.json|3|status_label, store_label, target_price
+SUSPECT|de-CH.json|3|status_label, store_label, target_price
+SUSPECT|el.json|3|status_label, store_label, target_price
+SUSPECT|es.json|3|status_label, store_label, target_price
+SUSPECT|et.json|3|status_label, store_label, target_price
+SUSPECT|fi.json|3|status_label, store_label, target_price
+SUSPECT|fr.json|3|status_label, store_label, target_price
+SUSPECT|fr_LU.json|3|status_label, store_label, target_price
+SUSPECT|fr-LU.json|3|status_label, store_label, target_price
+SUSPECT|hr.json|3|status_label, store_label, target_price
+SUSPECT|hu.json|3|status_label, store_label, target_price
+SUSPECT|is.json|3|status_label, store_label, target_price
+SUSPECT|it.json|3|status_label, store_label, target_price
+SUSPECT|lt.json|3|status_label, store_label, target_price
+SUSPECT|lv.json|3|status_label, store_label, target_price
+SUSPECT|nb.json|29|already_have_account, analyzing_with_gemini, app_title, auth_error, close, dont_have_account, email, error, error_details, error_loading_items, extract_info_image, invalid_email, invalid_password, item_added_success, item_deleted, login_button, logout, mic_placeholder, no_items, password
+SUSPECT|nl.json|3|status_label, store_label, target_price
+SUSPECT|nl_BE.json|3|status_label, store_label, target_price
+SUSPECT|nl-BE.json|3|status_label, store_label, target_price
+SUSPECT|no.json|3|status_label, store_label, target_price
+SUSPECT|pl.json|2|status_label, store_label
+SUSPECT|pt.json|3|status_label, store_label, target_price
+SUSPECT|ro.json|3|status_label, store_label, target_price
+SUSPECT|sk.json|3|status_label, store_label, target_price
+SUSPECT|sl.json|3|status_label, store_label, target_price
+SUSPECT|sv.json|3|status_label, store_label, target_price
+SUSPECT|uk.json|3|status_label, store_label, target_price
+TOTAL_SUSPECT_KEYS=124

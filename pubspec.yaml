@@ -1,0 +1,82 @@
+name: aura_catch
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  supabase_flutter: ^2.12.4
+  flutter_riverpod: ^3.3.1
+  go_router: ^17.2.3
+  flutter_dotenv: ^6.0.1
+  image_picker: ^1.1.2
+  easy_localization: ^3.0.7
+  url_launcher: ^6.3.1
+  shared_preferences: ^2.3.2
+  speech_to_text: ^7.0.0
+  google_sign_in: ^6.2.1
+  sign_in_with_apple: ^6.1.1
+  permission_handler: ^11.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - .env
+    - assets/images/
+    - assets/images/logo_hunter.png
+    - assets/images/logo_style.png
+    - assets/images/logo_original.png
+    - assets/images/logo.svg
+    - assets/translations/pl.json
+    - assets/translations/en.json
+    - assets/translations/en_US.json
+    - assets/translations/en-US.json
+    - assets/translations/en_GB.json
+    - assets/translations/en-GB.json
+    - assets/translations/de.json
+    - assets/translations/de_CH.json
+    - assets/translations/de-CH.json
+    - assets/translations/de_AT.json
+    - assets/translations/de-AT.json
+    - assets/translations/fr.json
+    - assets/translations/fr_LU.json
+    - assets/translations/fr-LU.json
+    - assets/translations/it.json
+    - assets/translations/es.json
+    - assets/translations/no.json
+    - assets/translations/is.json
+    - assets/translations/uk.json
+    - assets/translations/nl.json
+    - assets/translations/nl_BE.json
+    - assets/translations/nl-BE.json
+    - assets/translations/cs.json
+    - assets/translations/sk.json
+    - assets/translations/sv.json
+    - assets/translations/da.json
+    - assets/translations/fi.json
+    - assets/translations/en_IE.json
+    - assets/translations/en-IE.json
+    - assets/translations/pt.json
+    - assets/translations/el.json
+    - assets/translations/hu.json
+    - assets/translations/ro.json
+    - assets/translations/bg.json
+    - assets/translations/hr.json
+    - assets/translations/lt.json
+    - assets/translations/lv.json
+    - assets/translations/et.json
+    - assets/translations/sl.json
