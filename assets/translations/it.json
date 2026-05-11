@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[it] Confirm & Edit Details",
   "brand": "[it] Brand",
   "model": "[it] Model",
@@ -113,7 +113,7 @@
     "p_header_free": "Piano GRATUITO\nPLN 0 / sempre",
     "p_f1_pro": "Massimo. 10 slot di prodotto attivi in ​​\n.",
     "pricing_subtitle": "Inizia gratuitamente. Diventa PRO quando vuoi.",
-    "p_pro_price": "5,99 PLN/mese o 49,99 PLN/anno",
+    "p_pro_price": "5,99 PLN/mese",
     "p_f1_free": "Massimo. 3 prodotti\nin un ciclo di 30 giorni",
     "p_f2_title": "Gestione degli slot",
     "p_f5_title": "Pubblicità",

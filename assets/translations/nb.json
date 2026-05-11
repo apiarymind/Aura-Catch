@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "Bekreft og rediger detaljer",
   "brand": "Merke",
   "model": "Modell",
@@ -115,7 +115,7 @@
     "p_f2_free": "Ny spilleautomat tilgjengelig\n30 dager etter tillegg",
     "p_f1_free": "Maks. 3\nprodukter i en 30-dagers syklus",
     "p_f1_pro": "Maks. 10 aktive\nproduktplasser",
-    "p_pro_price": "PLN 5,99/måned eller PLN 49,99/år",
+    "p_pro_price": "PLN 5,99/måned",
     "p_f2_pro": "Full fleksibilitet:\nfjern og legg til når som helst",
     "p_f2_title": "Sporhåndtering",
     "p_f3_title": "Sporingstid",
@@ -154,3 +154,4 @@
     "pp_s8_1": "8.1. For brukere av GRATIS abonnement: Data om sporede produkter slettes fra databasen 30 dager etter slutten av sporingsperioden."
   }
 }
+

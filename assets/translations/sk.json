@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[sk] Confirm & Edit Details",
   "brand": "[sk] Brand",
   "model": "[sk] Model",
@@ -115,7 +115,7 @@
     "p_f2_title": "Správa slotov",
     "p_f1_pro": "Max. 10 aktívnych\nproduktových slotov",
     "p_f1_free": "Max. 3\nprodukty v 30-dňovom cykle",
-    "p_pro_price": "5,99 PLN/mesiac alebo 49,99 PLN/rok",
+    "p_pro_price": "5,99 PLN/mesiac",
     "p_f2_pro": "Úplná flexibilita:\nkedykoľvek odobrať a pridať",
     "p_f3_free": "30 dní sledovania produktu",
     "p_f2_free": "Nový slot je k dispozícii\n30 dní po pridaní",

@@ -20,6 +20,18 @@ class ProductCard extends ConsumerWidget {
 
   const ProductCard({super.key, required this.item, required this.onTap});
 
+  String _t(
+    String key, {
+    List<String>? args,
+    Map<String, String>? namedArgs,
+  }) {
+    try {
+      return tr(key, args: args, namedArgs: namedArgs);
+    } catch (_) {
+      return key;
+    }
+  }
+
   bool _requiresLogin(User? user) {
     if (user == null) return true;
     final email = user.email?.trim() ?? '';
@@ -74,7 +86,7 @@ class ProductCard extends ConsumerWidget {
 
     if (!launched && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(tr('error'))),
+        SnackBar(content: Text(_t('error'))),
       );
       return;
     }
@@ -171,13 +183,13 @@ class ProductCard extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            tr('current_price_label'),
+                            _t('current_price_label'),
                             style: theme.textTheme.labelSmall?.copyWith(color: colorScheme.onSurfaceVariant),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             item.currentPrice == null
-                                ? tr('pending_label')
+                                ? _t('pending_label')
                                 : '$currencyPrefix${item.currentPrice!.toStringAsFixed(2)}',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w800,
@@ -210,7 +222,7 @@ class ProductCard extends ConsumerWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                tr(
+                _t(
                   'target_price_label',
                   namedArgs: {'price': '$currencyPrefix${item.targetPrice.toStringAsFixed(2)}'},
                 ),
@@ -219,27 +231,31 @@ class ProductCard extends ConsumerWidget {
               const SizedBox(height: 4),
               Text(
                 item.lowestPrice180d == null
-                    ? tr('lowest_180_label_pending')
-                    : tr(
+                    ? _t('lowest_180_label_pending')
+                    : _t(
                         'lowest_180_label',
                         namedArgs: {'price': '$currencyPrefix${item.lowestPrice180d!.toStringAsFixed(2)}'},
                       ),
                 style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 8),
               Text(
-                tr('tracking_for_days', namedArgs: {'days': '$trackingDays'}),
+                _t('tracking_for_days', namedArgs: {'days': '$trackingDays'}),
                 style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
               ),
               if (isFreePlan)
                 Text(
                   remainingForFree.isNegative
-                      ? tr('free_window_expired')
-                      : tr('free_window_left_days', namedArgs: {'days': '${remainingForFree.inDays}'}),
+                      ? _t('free_window_expired')
+                      : _t('free_window_left_days', namedArgs: {'days': '${remainingForFree.inDays}'}),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: remainingForFree.isNegative ? colorScheme.error : colorScheme.primary,
                     fontWeight: FontWeight.w600,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               const SizedBox(height: 10),
               Row(
@@ -252,7 +268,7 @@ class ProductCard extends ConsumerWidget {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      '${item.storeName} • ${isStoreVerified ? tr('store_verified') : tr('store_unknown')}',
+                      '${item.storeName} • ${isStoreVerified ? _t('store_verified') : _t('store_unknown')}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -266,7 +282,7 @@ class ProductCard extends ConsumerWidget {
                 child: ElevatedButton.icon(
                   onPressed: isLocked ? null : () => _handleBuyPress(context, ref),
                   icon: const Icon(Icons.shopping_bag_outlined),
-                  label: Text(tr('buy_button')),
+                  label: Text(_t('buy_button')),
                 ),
               ),
             ],
@@ -296,7 +312,7 @@ class ProductCard extends ConsumerWidget {
                   Icon(Icons.lock, size: 56, color: colorScheme.primary),
                   const SizedBox(height: 8),
                   Text(
-                    tr('item_locked_label'),
+                    _t('item_locked_label'),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w800,
                       color: colorScheme.onPrimary,
@@ -306,7 +322,7 @@ class ProductCard extends ConsumerWidget {
                   ElevatedButton.icon(
                     onPressed: () => context.push('/premium'),
                     icon: const Icon(Icons.workspace_premium),
-                    label: Text(tr('unlock_with_pro')),
+                    label: Text(_t('unlock_with_pro')),
                   ),
                 ],
               ),

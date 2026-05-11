@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[da] Confirm & Edit Details",
   "brand": "[da] Brand",
   "model": "[da] Model",
@@ -110,7 +110,7 @@
     "p_header_func": "Funktionalitet / grænse",
     "p_header_free": "GRATIS plan\nPLN 0 / altid",
     "p_header_pro": "PRO plan",
-    "p_pro_price": "PLN 5,99/måned eller PLN 49,99/år",
+    "p_pro_price": "PLN 5,99/måned",
     "p_pro_trial": "30 dages gratis prøveperiode",
     "p_f1_title": "Produktgrænse",
     "p_f1_free": "Maks. 3\nprodukter i en 30-dages cyklus",
@@ -154,3 +154,4 @@
     "tos_s3_2": "3.2. I GRATIS planen opdateres prisen en gang om dagen (hver 24 timer), omkring det tidspunkt, hvor produktet blev tilføjet til databasen."
   }
 }
+

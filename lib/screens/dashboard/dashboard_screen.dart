@@ -1,12 +1,14 @@
-import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'widgets/product_card.dart';
 import '../../providers/subscription_provider.dart';
@@ -15,6 +17,7 @@ import '../../providers/tracking_provider.dart';
 import '../../providers/region_provider.dart';
 import '../../models/tracked_item.dart';
 import '../../services/database_service.dart';
+import '../../services/image_service.dart';
 import '../../utils/attributes_utils.dart';
 import '../../widgets/ad_banner.dart';
 import '../../widgets/aura_logo.dart';
@@ -27,16 +30,35 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  static const String _androidInterstitialAdUnitId = 'ca-app-pub-3940256099942544/1033173712';
+  static const String _iosInterstitialAdUnitId = 'ca-app-pub-3940256099942544/4411468910';
+
   final TextEditingController _searchController = TextEditingController();
   final SpeechToText _speechToText = SpeechToText();
+  final ImageService _imageService = const ImageService();
   final List<TrackedItem> _webDemoItems = [];
   bool _speechEnabled = false;
   bool _isListening = false;
+  InterstitialAd? _visualSearchInterstitial;
+  bool _isInterstitialLoading = false;
 
   @override
   void initState() {
     super.initState();
     _initSpeech();
+    _primeInterstitial();
+  }
+
+  String _t(
+    String key, {
+    List<String>? args,
+    Map<String, String>? namedArgs,
+  }) {
+    try {
+      return tr(key, args: args, namedArgs: namedArgs);
+    } catch (_) {
+      return key;
+    }
   }
 
   Future<void> _initSpeech() async {
@@ -96,7 +118,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       if (!_speechEnabled) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(tr('failed_microphone'))),
+            SnackBar(content: Text(_t('failed_microphone'))),
           );
         }
         return;
@@ -149,6 +171,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void dispose() {
     _speechToText.stop();
+    _visualSearchInterstitial?.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -160,17 +183,135 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     _showResultDialog();
   }
 
-  void _handleCamera() async {
+  String _resolveInterstitialAdUnitId() {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.iOS:
+        return _iosInterstitialAdUnitId;
+      default:
+        return _androidInterstitialAdUnitId;
+    }
+  }
+
+  Future<bool> _isCurrentUserFreePlan() async {
+    if (kIsWeb) return false;
+
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user == null) {
+        return true;
+      }
+
+      final row = await Supabase.instance.client
+          .from('users')
+          .select('active_plan')
+          .eq('id', user.id)
+          .maybeSingle();
+
+      final activePlan = row?['active_plan']?.toString().toUpperCase() ?? 'FREE';
+      return activePlan == 'FREE';
+    } catch (_) {
+      return true;
+    }
+  }
+
+  Future<InterstitialAd?> _loadInterstitialAd() async {
+    if (_isInterstitialLoading) {
+      return _visualSearchInterstitial;
+    }
+
+    final existing = _visualSearchInterstitial;
+    if (existing != null) {
+      return existing;
+    }
+
+    _isInterstitialLoading = true;
+    final completer = Completer<InterstitialAd?>();
+
+    InterstitialAd.load(
+      adUnitId: _resolveInterstitialAdUnitId(),
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (loadedAd) {
+          _visualSearchInterstitial = loadedAd;
+          _isInterstitialLoading = false;
+          if (!completer.isCompleted) {
+            completer.complete(loadedAd);
+          }
+        },
+        onAdFailedToLoad: (_) {
+          _isInterstitialLoading = false;
+          if (!completer.isCompleted) {
+            completer.complete(null);
+          }
+        },
+      ),
+    );
+
+    return completer.future;
+  }
+
+  Future<void> _primeInterstitial() async {
+    if (kIsWeb) return;
+    final isFree = await _isCurrentUserFreePlan();
+    if (!isFree) return;
+    await _loadInterstitialAd();
+  }
+
+  Future<void> _showVisualSearchInterstitialIfNeeded() async {
+    final isFreePlan = await _isCurrentUserFreePlan();
+    if (kIsWeb || !isFreePlan) {
+      return;
+    }
+
+    final ad = _visualSearchInterstitial ?? await _loadInterstitialAd();
+    if (ad == null) {
+      return;
+    }
+
+    _visualSearchInterstitial = null;
+
+    final completer = Completer<void>();
+
+    ad.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (dismissedAd) {
+        dismissedAd.dispose();
+        _visualSearchInterstitial = null;
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      },
+      onAdFailedToShowFullScreenContent: (failedAd, _) {
+        failedAd.dispose();
+        _visualSearchInterstitial = null;
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      },
+    );
+
+    ad.show();
+    await completer.future.timeout(
+      const Duration(seconds: 8),
+      onTimeout: () {
+        ad.dispose();
+      },
+    );
+
+    await _primeInterstitial();
+  }
+
+  Future<void> _pickAndAnalyzeImage(ImageSource source) async {
     final picker = ImagePicker();
     try {
-      final XFile? photo = await picker.pickImage(source: ImageSource.camera);
+      await _showVisualSearchInterstitialIfNeeded();
+
+      final XFile? photo = await picker.pickImage(source: source);
       if (photo == null) return;
 
-      final bytes = await photo.readAsBytes();
-      final String base64Image = base64Encode(bytes);
+      final String base64Image = await _imageService.compressXFileToBase64(photo);
 
       ref.read(aiSearchStateProvider.notifier).analyzeQuery(
-        text: tr('extract_info_image'),
+        text: _t('extract_info_image'),
         imageBase64: base64Image,
       );
       
@@ -181,12 +322,45 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(tr('failed_camera', args: [e.toString()])),
+            content: Text(_t('failed_camera', args: [e.toString()])),
             backgroundColor: Colors.red,
           ),
         );
       }
     }
+  }
+
+  Future<void> _openVisualSearchSourcePicker() async {
+    if (!mounted) return;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: Text(_t('camera')),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  _pickAndAnalyzeImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: Text(_t('gallery')),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  _pickAndAnalyzeImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _showResultDialog() {
@@ -209,7 +383,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     ref.read(aiSearchStateProvider.notifier).reset();
                     ref.invalidate(trackedItemsProvider);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(tr('item_added_success'))),
+                      SnackBar(content: Text(_t('item_added_success'))),
                     );
                   },
                   onWebDemoAdd: (demoData) {
@@ -225,20 +399,20 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   children: [
                     const CircularProgressIndicator(),
                     const SizedBox(height: 16),
-                    Text(tr('analyzing_with_gemini')),
+                    Text(_t('analyzing_with_gemini')),
                   ],
                 ),
               ),
               error: (error, _) => AlertDialog(
-                title: Text(tr('error')),
-                content: Text(tr('error_details', args: [error.toString()])),
+                title: Text(_t('error')),
+                content: Text(_t('error_details', args: [error.toString()])),
                 actions: [
                   TextButton(
                     onPressed: () {
                       ref.read(aiSearchStateProvider.notifier).reset();
                       Navigator.of(context).pop();
                     },
-                    child: Text(tr('close')),
+                    child: Text(_t('close')),
                   ),
                 ],
               ),
@@ -340,21 +514,24 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Aura',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(width: 6),
-            const AuraLogo(size: 55, showWordmark: false),
-            const SizedBox(width: 6),
-            Text(
-              'Catch',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-            ),
-          ],
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Aura',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(width: 6),
+              const AuraLogo(size: 55, showWordmark: false),
+              const SizedBox(width: 6),
+              Text(
+                'Catch',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
         ),
         centerTitle: true,
       ),
@@ -367,7 +544,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               controller: _searchController,
               onSubmitted: _handleSearch,
               decoration: InputDecoration(
-                hintText: tr('what_are_you_looking_for'),
+                hintText: _t('what_are_you_looking_for'),
                 prefixIcon: IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () => _handleSearch(_searchController.text),
@@ -393,7 +570,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 final displayedItems = kIsWeb ? [..._webDemoItems, ...items] : items;
 
                 if (displayedItems.isEmpty) {
-                  return Center(child: Text(tr('no_items')));
+                  return Center(child: Text(_t('no_items')));
                 }
                 return ListView.builder(
                   itemCount: displayedItems.length,
@@ -418,7 +595,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         }
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(tr('item_deleted', args: [item.brand, item.model])),
+                            content: Text(_t('item_deleted', args: [item.brand, item.model])),
                           ),
                         );
                       },
@@ -432,21 +609,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               },
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => Center(
-                child: Text(tr('error_loading_items', args: [error.toString()])),
+                child: Text(_t('error_loading_items', args: [error.toString()])),
               ),
             ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (!isPro) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(tr('showing_ad'))),
-            );
-          }
-          _handleCamera();
-        },
+        onPressed: _openVisualSearchSourcePicker,
         child: const Icon(Icons.camera_alt),
       ),
     );
@@ -477,19 +647,22 @@ class _EditItemDialogState extends ConsumerState<_EditItemDialog> {
   late final TextEditingController _priceController;
   final Map<String, TextEditingController> _dynamicControllers = {};
   String _selectedCondition = 'NEW';
+  String _selectedScope = 'GLOBAL';
   late final bool _isBeautyCategory;
   bool _isSavingLocal = false;
 
   static const List<String> _conditionOptions = ['NEW', 'USED', 'OUTLET'];
+  static const List<String> _scopeOptions = ['LOCAL', 'EU', 'GLOBAL'];
 
   @override
   void initState() {
     super.initState();
     _brandController = TextEditingController(text: widget.aiData['brand']?.toString() ?? '');
     _modelController = TextEditingController(text: _extractAiModel());
-    _priceController = TextEditingController(text: widget.aiData['targetPrice']?.toString() ?? '');
+    _priceController = TextEditingController(text: _extractInitialTargetPrice());
     _isBeautyCategory = _matchesBeautyCategory(_extractCategory());
     _selectedCondition = _isBeautyCategory ? 'NEW' : _normalizeCondition(widget.aiData['condition']);
+    _selectedScope = _normalizeScope(widget.aiData['scope']);
 
     // Pre-fill the variant field from AI-extracted attributes.
     // Priority: explicit 'wariant' key > 'volume_ml' > any key whose value looks like a size.
@@ -533,6 +706,26 @@ class _EditItemDialogState extends ConsumerState<_EditItemDialog> {
       return value;
     }
     return 'NEW';
+  }
+
+  String _normalizeScope(dynamic rawScope) {
+    final value = rawScope?.toString().trim().toUpperCase() ?? '';
+    if (_scopeOptions.contains(value)) {
+      return value;
+    }
+    return 'GLOBAL';
+  }
+
+  String _extractInitialTargetPrice() {
+    final target = widget.aiData['targetPrice'];
+    if (target is num) {
+      return target.toString();
+    }
+    if (target != null) {
+      final text = target.toString().trim();
+      if (text.isNotEmpty) return text;
+    }
+    return '';
   }
 
   String _extractAiModel() {
@@ -646,6 +839,7 @@ class _EditItemDialogState extends ConsumerState<_EditItemDialog> {
           'model': _modelController.text,
           'targetPrice': parsedTargetPrice,
           'condition': _selectedCondition,
+          'scope': _selectedScope,
           'attributes': demoAttributes,
         });
 
@@ -661,6 +855,7 @@ class _EditItemDialogState extends ConsumerState<_EditItemDialog> {
         'model': _modelController.text,
         'targetPrice': parsedTargetPrice,
         'condition': _selectedCondition,
+        'scope': _selectedScope,
         'category': widget.aiData['category'],
         'attributes': sanitizedAttributes,
         if (widget.aiData['volume_ml'] != null) 'volume_ml': widget.aiData['volume_ml'],
@@ -796,6 +991,31 @@ class _EditItemDialogState extends ConsumerState<_EditItemDialog> {
                 }
                 setState(() {
                   _selectedCondition = selection.first;
+                });
+              },
+            ),
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                tr('scope'),
+                style: theme.textTheme.labelLarge,
+              ),
+            ),
+            const SizedBox(height: 8),
+            SegmentedButton<String>(
+              segments: _scopeOptions
+                  .map(
+                    (scope) => ButtonSegment<String>(
+                      value: scope,
+                      label: Text(scope),
+                    ),
+                  )
+                  .toList(),
+              selected: <String>{_selectedScope},
+              onSelectionChanged: (selection) {
+                setState(() {
+                  _selectedScope = selection.first;
                 });
               },
             ),

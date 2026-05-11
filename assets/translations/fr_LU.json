@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[fr-LU] Confirm & Edit Details",
   "brand": "[fr-LU] Brand",
   "model": "[fr-LU] Model",
@@ -110,7 +110,7 @@
     "p_header_func": "Fonctionnalité / Limite",
     "p_header_free": "Forfait GRATUIT\n0 PLN / toujours",
     "p_header_pro": "Forfait PRO",
-    "p_pro_price": "5,99 PLN/mois ou 49,99 PLN/an",
+    "p_pro_price": "5,99 PLN/mois",
     "p_pro_trial": "30 jours d'essai gratuit",
     "p_f1_title": "Limite de produit",
     "p_f1_free": "Max. 3 produits\ndans un cycle de 30 jours",

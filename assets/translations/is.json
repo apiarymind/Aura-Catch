@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[is] Confirm & Edit Details",
   "brand": "[is] Brand",
   "model": "[is] Model",
@@ -111,7 +111,7 @@
     "p_header_free": "ÓKEYPIS áætlun\nPLN 0 / alltaf",
     "p_header_pro": "PRO áætlun",
     "p_f2_pro": "Fullur sveigjanleiki:\nfjarlægðu og bættu við hvenær sem er",
-    "p_pro_price": "PLN 5,99/mánuði eða PLN 49,99/ári",
+    "p_pro_price": "PLN 5,99/mánuði",
     "p_f1_pro": "Hámark 10 virkir\nvörupláss",
     "p_f1_free": "Hámark 3\nvörur í 30 daga lotu",
     "p_f3_free": "30 daga vörumæling",
@@ -154,3 +154,4 @@
     "tos_s3_title": "3. Áskriftarreglur og takmörk (ÓKEYPIS áætlun)"
   }
 }
+

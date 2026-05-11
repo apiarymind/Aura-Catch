@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application
-        android:label="aura_catch"
+        android:label="Aura Catch"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

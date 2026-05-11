@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[nl-BE] Confirm & Edit Details",
   "brand": "[nl-BE] Brand",
   "model": "[nl-BE] Model",
@@ -111,7 +111,7 @@
     "p_header_func": "Functionaliteit / Limiet",
     "p_pro_trial": "30 dagen gratis proefperiode",
     "p_f1_free": "Max. 3\nproducten in een cyclus van 30 dagen",
-    "p_pro_price": "PLN 5,99/maand of PLN 49,99/jaar",
+    "p_pro_price": "PLN 5,99/maand",
     "p_f2_title": "Slotbeheer",
     "p_f1_title": "Productlimiet",
     "p_f1_pro": "Max. 10 actieve\nproductslots",
@@ -154,3 +154,4 @@
     "pp_s8_title": "8. Bewaring van gegevens"
   }
 }
+

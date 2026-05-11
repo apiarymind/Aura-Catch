@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[et] Confirm & Edit Details",
   "brand": "[et] Brand",
   "model": "[et] Model",
@@ -112,7 +112,7 @@
     "p_header_free": "TASUTA plaan\nPLN 0 / alati",
     "p_header_func": "Funktsionaalsus / piirang",
     "p_f1_title": "Toote piirang",
-    "p_pro_price": "5,99 zlotti kuus või 49,99 zlotti aastas",
+    "p_pro_price": "5,99 zlotti kuus võ",
     "p_f2_free": "Uus pesa on saadaval\n30 päeva pärast lisamist",
     "p_f1_free": "Max 3\ntoodet 30-päevase tsükli jooksul",
     "p_f1_pro": "Max 10 aktiivset\ntootepesa",

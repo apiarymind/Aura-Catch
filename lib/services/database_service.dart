@@ -10,7 +10,8 @@ class FreePlanLimitReachedException implements Exception {
 
 class DatabaseService {
   final SupabaseClient _client;
-  static const int _freeMaxActiveItems = 3;
+  static const int _freeMaxTrackedItemsPerWindow = 3;
+  static const int _freeQuotaWindowDays = 30;
   static const int _freeTrackingDays = 7;
 
   DatabaseService(this._client);
@@ -27,6 +28,12 @@ class DatabaseService {
     final value = rawCondition?.toString().trim().toUpperCase() ?? '';
     if (value == 'USED' || value == 'OUTLET') return value;
     return 'NEW';
+  }
+
+  String _normalizeScope(dynamic rawScope) {
+    final value = rawScope?.toString().trim().toUpperCase() ?? '';
+    if (value == 'LOCAL' || value == 'EU') return value;
+    return 'GLOBAL';
   }
 
   Map<String, dynamic> _normalizeAttributes(dynamic rawAttributes) {
@@ -53,18 +60,16 @@ class DatabaseService {
     return 'FREE';
   }
 
-  Future<void> _enforceFreeLifecycleLocks(String userId) async {
-    final cutoffIso = DateTime.now()
-        .toUtc()
-        .subtract(const Duration(days: _freeTrackingDays))
-        .toIso8601String();
+  Future<void> _enforceFreeExpiryStatuses(String userId) async {
+    final nowIso = DateTime.now().toUtc().toIso8601String();
 
     await _client
         .from('tracked_items')
-        .update({'current_status': 'LOCKED'})
+        .update({'current_status': 'EXPIRED'})
         .eq('user_id', userId)
         .eq('current_status', 'ACTIVE')
-        .lt('added_at', cutoffIso);
+        .not('expires_at', 'is', null)
+        .lte('expires_at', nowIso);
   }
 
   Future<void> _enforceLifecycleForPlan({
@@ -72,22 +77,43 @@ class DatabaseService {
     required String activePlan,
   }) async {
     if (activePlan == 'FREE') {
-      await _enforceFreeLifecycleLocks(userId);
+      await _enforceFreeExpiryStatuses(userId);
     }
   }
 
-  Future<void> _enforceFreeTierActiveLimit(String userId) async {
+  String _freeWindowStartIso() {
+    return DateTime.now()
+        .toUtc()
+        .subtract(const Duration(days: _freeQuotaWindowDays))
+        .toIso8601String();
+  }
+
+  Future<void> _enforceFreeTierRollingQuota(String userId) async {
+    final windowStartIso = _freeWindowStartIso();
+
     final rows = await _client
-        .from('tracked_items')
+        .from('free_quota_events')
         .select('id')
         .eq('user_id', userId)
-        .eq('current_status', 'ACTIVE');
+        .eq('event_type', 'TRACKED_ITEM_CREATED')
+        .gte('created_at', windowStartIso);
 
-    final activeCount = (rows as List<dynamic>).length;
-    debugPrint('Checking active item count for user $userId: $activeCount/$_freeMaxActiveItems');
-    if (activeCount >= _freeMaxActiveItems) {
+    final usedInWindow = (rows as List<dynamic>).length;
+    debugPrint('Checking rolling quota for user $userId: $usedInWindow/$_freeMaxTrackedItemsPerWindow in ${_freeQuotaWindowDays}d window');
+    if (usedInWindow >= _freeMaxTrackedItemsPerWindow) {
       throw FreePlanLimitReachedException();
     }
+  }
+
+  Future<void> _recordFreeQuotaEvent({
+    required String userId,
+    required String trackedItemId,
+  }) async {
+    await _client.from('free_quota_events').insert({
+      'user_id': userId,
+      'tracked_item_id': trackedItemId,
+      'event_type': 'TRACKED_ITEM_CREATED',
+    });
   }
 
   Future<void> handlePlanDowngrade(String userId) async {
@@ -102,7 +128,7 @@ class DatabaseService {
         .toList();
 
     final oldestActiveIds = items
-        .take(_freeMaxActiveItems)
+        .take(_freeMaxTrackedItemsPerWindow)
         .map((row) => row['id']?.toString())
         .whereType<String>()
         .toList();
@@ -120,7 +146,7 @@ class DatabaseService {
           .inFilter('id', oldestActiveIds);
     }
 
-    await _enforceFreeLifecycleLocks(userId);
+    await _enforceFreeExpiryStatuses(userId);
   }
 
   Future<void> addTrackedItem(Map<String, dynamic> aiData) async {
@@ -133,20 +159,34 @@ class DatabaseService {
     final activePlan = await _getActivePlan(user.id);
     await _enforceLifecycleForPlan(userId: user.id, activePlan: activePlan);
     if (activePlan == 'FREE') {
-      await _enforceFreeTierActiveLimit(user.id);
+      await _enforceFreeTierRollingQuota(user.id);
     }
 
     final dataToInsert = buildTrackedItemInsertPayload(
       userId: user.id,
+      activePlan: activePlan,
       aiData: aiData,
     );
 
-    await _client.from('tracked_items').insert(dataToInsert);
+    final inserted = await _client
+        .from('tracked_items')
+        .insert(dataToInsert)
+        .select('id')
+        .single();
+
+    if (activePlan == 'FREE') {
+      final trackedItemId = inserted['id']?.toString();
+      if (trackedItemId == null || trackedItemId.isEmpty) {
+        throw Exception('Failed to resolve inserted tracked item id for quota ledger');
+      }
+      await _recordFreeQuotaEvent(userId: user.id, trackedItemId: trackedItemId);
+    }
   }
 
   @visibleForTesting
   Map<String, dynamic> buildTrackedItemInsertPayload({
     required String userId,
+    required String activePlan,
     required Map<String, dynamic> aiData,
   }) {
 
@@ -168,11 +208,17 @@ class DatabaseService {
 
     final condition = _normalizeCondition(aiData['condition']);
     mergedAttributes['condition'] = condition;
+    final scopeRegion = _normalizeScope(aiData['scope']);
 
     final volumeMl = aiData['volume_ml']?.toString().trim();
     if (volumeMl != null && volumeMl.isNotEmpty && !mergedAttributes.containsKey('volume_ml')) {
       mergedAttributes['volume_ml'] = volumeMl;
     }
+
+    final nowUtc = DateTime.now().toUtc();
+    final expiresAt = activePlan == 'FREE'
+        ? nowUtc.add(const Duration(days: _freeTrackingDays)).toIso8601String()
+        : null;
 
     final dataToInsert = {
       'user_id': userId,
@@ -181,6 +227,9 @@ class DatabaseService {
       'target_price': parsedTargetPrice,
       'current_status': 'ACTIVE',
       'attributes': mergedAttributes,
+      'scope_region': scopeRegion,
+      'added_at': nowUtc.toIso8601String(),
+      'expires_at': expiresAt,
     };
 
     return dataToInsert;

@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[pt] Confirm & Edit Details",
   "brand": "[pt] Brand",
   "model": "[pt] Model",
@@ -111,7 +111,7 @@
     "p_header_pro": "Plano PRO",
     "p_header_free": "Plano GRATUITO\nPLN 0 / sempre",
     "p_f1_pro": "Máx. 10 slots de produtos\nativos",
-    "p_pro_price": "PLN 5,99/mês ou PLN 49,99/ano",
+    "p_pro_price": "PLN 5,99/mês",
     "p_f1_free": "Máx. 3\nprodutos em um ciclo de 30 dias",
     "p_f2_free": "Novo slot disponível\n30 dias após a adição",
     "p_f1_title": "Limite do produto",
@@ -154,3 +154,4 @@
     "tos_s3_1": "3.1. Um usuário do plano GRATUITO pode acompanhar o produto por 30 dias a partir do momento em que ele é adicionado."
   }
 }
+

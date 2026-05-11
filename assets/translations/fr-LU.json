@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[fr-LU] Confirm & Edit Details",
   "brand": "[fr-LU] Brand",
   "model": "[fr-LU] Model",
@@ -106,7 +106,7 @@
     "faq_a3": "Oui! Le plan GRATUIT vous permet de suivre 3 produits gratuitement sur un cycle de 30 jours.",
     "faq_a1": "Non, notre radar se concentre uniquement sur le prix de base ferme du produit, ignorant les frais d'expédition variables.",
     "pricing_title": "Liste de prix",
-    "p_pro_price": "5,99 PLN/mois ou 49,99 PLN/an",
+    "p_pro_price": "5,99 PLN/mois",
     "pricing_subtitle": "Commencez gratuitement. Devenez PRO quand vous le souhaitez.",
     "p_f1_free": "Max. 3 produits\ndans un cycle de 30 jours",
     "p_header_free": "Forfait GRATUIT\n0 PLN / toujours",

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/router/app_router.dart';
@@ -21,6 +22,10 @@ void main() async {
     url: dotenv.env['SUPABASE_URL'] ?? '',
     anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
   );
+
+  if (!kIsWeb) {
+    await MobileAds.instance.initialize();
+  }
 
   final sharedPrefs = await SharedPreferences.getInstance();
   final initialSkin = appThemeSkinFromStorageValue(

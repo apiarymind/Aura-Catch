@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[ro] Confirm & Edit Details",
   "brand": "[ro] Brand",
   "model": "[ro] Model",
@@ -110,7 +110,7 @@
     "p_header_func": "Funcționalitate / Limită",
     "p_header_free": "Plan GRATUIT\n0 PLN / întotdeauna",
     "p_f1_pro": "Max. 10 sloturi pentru produse\nactive",
-    "p_pro_price": "5,99 PLN/lună sau 49,99 PLN/an",
+    "p_pro_price": "5,99 PLN/lună",
     "p_f1_free": "Max. 3 produse\nîntr-un ciclu de 30 de zile",
     "p_f1_title": "Limita de produs",
     "p_pro_trial": "Probă gratuită de 30 de zile",
@@ -154,3 +154,4 @@
     "tos_s3_2": "3.2. În planul GRATUIT, prețul este actualizat o dată pe zi (la fiecare 24 de ore), în jurul orei la care produsul a fost adăugat în baza de date."
   }
 }
+

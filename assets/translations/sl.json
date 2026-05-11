@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[sl] Confirm & Edit Details",
   "brand": "[sl] Brand",
   "model": "[sl] Model",
@@ -110,7 +110,7 @@
     "p_header_func": "Funkcionalnost / Omejitev",
     "p_header_pro": "PRO načrt",
     "p_header_free": "BREZPLAČNI paket\n0 PLN / vedno",
-    "p_pro_price": "5,99 PLN/mesec ali 49,99 PLN/leto",
+    "p_pro_price": "5,99 PLN/mesec",
     "p_pro_trial": "30 dni brezplačnega preizkusa",
     "p_f1_title": "Omejitev izdelka",
     "p_f1_free": "maks. 3\nizdelki v 30-dnevnem ciklu",

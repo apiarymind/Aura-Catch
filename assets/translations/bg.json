@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[bg] Confirm & Edit Details",
   "brand": "[bg] Brand",
   "model": "[bg] Model",
@@ -110,7 +110,7 @@
     "p_header_func": "Функционалност / Лимит",
     "p_header_free": "БЕЗПЛАТЕН план\n0 PLN / винаги",
     "p_header_pro": "PRO план",
-    "p_pro_price": "5,99 PLN/месец или 49,99 PLN/година",
+    "p_pro_price": "5,99 PLN/месец",
     "p_pro_trial": "30 дни безплатен пробен период",
     "p_f1_title": "Продуктов лимит",
     "p_f1_free": "Макс. 3\nпродукта в 30-дневен цикъл",

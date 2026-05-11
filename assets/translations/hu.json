@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[hu] Confirm & Edit Details",
   "brand": "[hu] Brand",
   "model": "[hu] Model",
@@ -110,7 +110,7 @@
     "pricing_title": "Árlista",
     "p_header_func": "Funkcionalitás / korlát",
     "p_header_free": "INGYENES csomag\nPLN 0 / mindig",
-    "p_pro_price": "5,99 PLN/hó vagy 49,99 PLN/év",
+    "p_pro_price": "5,99 PLN/hó",
     "p_pro_trial": "30 napos ingyenes próbaverzió",
     "p_f1_title": "Termékkorlát",
     "p_f2_free": "Új hely áll rendelkezésre\n30 nappal a hozzáadása után",

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "760057266742",
+    "project_id": "aura-catch-764dc",
+    "storage_bucket": "aura-catch-764dc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760057266742:android:a8d7ed13a3eec68bf54e97",
+        "android_client_info": {
+          "package_name": "com.dariusz.auracatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq7C7wX_hBeA3q_eOHrjGu6D_6zxjg3Qk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

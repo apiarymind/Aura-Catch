@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[lt] Confirm & Edit Details",
   "brand": "[lt] Brand",
   "model": "[lt] Model",
@@ -109,7 +109,7 @@
     "p_header_func": "Funkcionalumas / riba",
     "pricing_subtitle": "Pradėkite nemokamai. Eikite į PRO, kada tik norite.",
     "pricing_title": "Kainoraštis",
-    "p_pro_price": "5,99 PLN per mėnesį arba 49,99 PLN per metus",
+    "p_pro_price": "5,99 PLN per mėnesį",
     "p_pro_trial": "30 dienų nemokama bandomoji versija",
     "p_header_pro": "PRO planas",
     "p_f1_free": "Maks. 3\nproduktai per 30 dienų ciklą",

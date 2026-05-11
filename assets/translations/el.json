@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[el] Confirm & Edit Details",
   "brand": "[el] Brand",
   "model": "[el] Model",
@@ -110,7 +110,7 @@
     "p_header_func": "Λειτουργικότητα / Όριο",
     "p_header_free": "ΔΩΡΕΑΝ πρόγραμμα\nPLN 0 / πάντα",
     "p_header_pro": "Σχέδιο PRO",
-    "p_pro_price": "5,99 PLN/μήνα ή 49,99 PLN/έτος",
+    "p_pro_price": "5,99 PLN/μήνα",
     "p_pro_trial": "30 ημέρες δωρεάν δοκιμή",
     "p_f1_title": "Όριο προϊόντος",
     "p_f1_free": "Μέγ. 3\nπροϊόντα σε κύκλο 30 ημερών",

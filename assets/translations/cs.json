@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[cs] Confirm & Edit Details",
   "brand": "[cs] Brand",
   "model": "[cs] Model",
@@ -110,7 +110,7 @@
     "p_header_func": "Funkčnost / Limit",
     "p_header_free": "ZDARMA plán\nPLN 0 / vždy",
     "p_header_pro": "PRO plán",
-    "p_pro_price": "5,99 PLN/měsíc nebo 49,99 PLN/rok",
+    "p_pro_price": "5,99 PLN/měsíc",
     "p_pro_trial": "30denní bezplatná zkušební verze",
     "p_f1_title": "Limit produktu",
     "p_f1_free": "Max. 3\nprodukty ve 30denním cyklu",

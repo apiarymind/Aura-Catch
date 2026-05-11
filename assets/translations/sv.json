@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[sv] Confirm & Edit Details",
   "brand": "[sv] Brand",
   "model": "[sv] Model",
@@ -113,7 +113,7 @@
     "p_header_pro": "PRO plan",
     "p_f1_pro": "Max. 10 aktiva\nproduktplatser",
     "p_f1_free": "Max. 3\nprodukter i en 30-dagarscykel",
-    "p_pro_price": "5,99 PLN/månad eller 49,99 PLN/år",
+    "p_pro_price": "5,99 PLN/månad",
     "p_f2_title": "Slotshantering",
     "p_f1_title": "Produktgräns",
     "p_f2_free": "Ny slot tillgänglig\n30 dagar efter tillägg",

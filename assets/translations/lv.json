@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[lv] Confirm & Edit Details",
   "brand": "[lv] Brand",
   "model": "[lv] Model",
@@ -111,7 +111,7 @@
     "pricing_title": "Cenrādis",
     "p_header_pro": "PRO plāns",
     "p_f1_free": "Maks. 3\nprodukti 30 dienu ciklā",
-    "p_pro_price": "PLN 5,99 mēnesī vai PLN 49,99 gadā",
+    "p_pro_price": "PLN 5,99 mēnesī",
     "p_f2_title": "Slotu pārvaldība",
     "p_pro_trial": "30 dienu bezmaksas izmēģinājums",
     "p_f1_title": "Produkta ierobežojums",
@@ -154,3 +154,4 @@
     "pp_s8_1": "8.1. BEZMAKSAS plāna lietotājiem: dati par izsekotajiem produktiem tiek dzēsti no datu bāzes 30 dienas pēc izsekošanas perioda beigām."
   }
 }
+

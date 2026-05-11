@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[de-AT] Confirm & Edit Details",
   "brand": "[de-AT] Brand",
   "model": "[de-AT] Model",
@@ -110,7 +110,7 @@
     "p_header_func": "Funktionalität / Limit",
     "p_header_free": "KOSTENLOSER Plan\n0 PLN / immer",
     "p_header_pro": "PRO-Plan",
-    "p_pro_price": "5,99 PLN/Monat oder 49,99 PLN/Jahr",
+    "p_pro_price": "5,99 PLN/Monat",
     "p_pro_trial": "30 Tage kostenlose Testversion",
     "p_f1_title": "Produktlimit",
     "p_f1_free": "Max. 3\nProdukte im 30-Tage-Zyklus",

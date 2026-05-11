@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[en-IE] Confirm & Edit Details",
   "brand": "[en-IE] Brand",
   "model": "[en-IE] Model",
@@ -110,7 +110,7 @@
     "p_header_func": "Functionality / Limit",
     "p_header_free": "FREE plan\nPLN 0 / always",
     "p_header_pro": "PRO plan",
-    "p_pro_price": "PLN 5.99/month or PLN 49.99/year",
+    "p_pro_price": "PLN 5.99/month",
     "p_pro_trial": "30 days free trial",
     "p_f1_title": "Product limit",
     "p_f1_free": "Max. 3\nproducts in a 30-day cycle",
@@ -154,3 +154,4 @@
     "tos_s3_3": "3.3. After 30 days, tracking ends and historical product data is archived in accordance with the Privacy Policy."
   }
 }
+

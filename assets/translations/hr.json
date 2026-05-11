@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "[hr] Confirm & Edit Details",
   "brand": "[hr] Brand",
   "model": "[hr] Model",
@@ -110,7 +110,7 @@
     "p_header_pro": "PRO plan",
     "p_header_free": "BESPLATAN plan\n0 PLN / uvijek",
     "p_header_func": "Funkcionalnost / Ograničenje",
-    "p_pro_price": "5,99 PLN mjesečno ili 49,99 PLN godišnje",
+    "p_pro_price": "5,99 PLN mjesečno",
     "p_pro_trial": "30 dana besplatnog probnog razdoblja",
     "p_f1_free": "Maks. 3\nproizvoda u ciklusu od 30 dana",
     "p_f1_pro": "Maks. 10 aktivnih\nutora za proizvode",
@@ -154,3 +154,4 @@
     "tos_s3_2": "3.2. U BESPLATNOM planu, cijena se ažurira jednom dnevno (svaka 24 sata), otprilike u vrijeme kada je proizvod dodan u bazu podataka."
   }
 }
+

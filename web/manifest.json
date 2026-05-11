@@ -1,6 +1,6 @@
 {
-    "name": "aura_catch",
-    "short_name": "aura_catch",
+    "name": "Aura Catch",
+    "short_name": "Aura Catch",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#FFFFFF",
