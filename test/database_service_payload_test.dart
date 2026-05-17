@@ -10,6 +10,7 @@ void main() {
     test('keeps electronics wariant and sanitizes empty keys', () {
       final payload = service.buildTrackedItemInsertPayload(
         userId: 'user-1',
+        activePlan: 'free',
         aiData: {
           'brand': 'Apple',
           'model': 'iPhone 15 Pro',
@@ -40,6 +41,7 @@ void main() {
     test('beauty payload keeps wariant and injects volume_ml when missing', () {
       final payload = service.buildTrackedItemInsertPayload(
         userId: 'user-2',
+        activePlan: 'free',
         aiData: {
           'brand': 'Chanel',
           'model': 'N°5 Eau de Parfum',
@@ -63,6 +65,7 @@ void main() {
     test('clothing payload keeps wariant and normalizes condition fallback', () {
       final payload = service.buildTrackedItemInsertPayload(
         userId: 'user-3',
+        activePlan: 'free',
         aiData: {
           'brand': 'Nike',
           'model': 'Air Force 1',

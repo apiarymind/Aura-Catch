@@ -74,8 +74,8 @@ class LandingScreen extends StatelessWidget {
                               SizedBox(height: isDesktop ? 34 : 24),
                               _HeroSection(isDesktop: isDesktop),
                               SizedBox(height: isDesktop ? 32 : 24),
-                              _SocialProofSection(theme: theme, isDesktop: isDesktop),
-                              SizedBox(height: isDesktop ? 14 : 12),
+                              _TrustedPartnersSection(theme: theme, isDesktop: isDesktop),
+                              SizedBox(height: isDesktop ? 32 : 24),
                               _MarketsFlagsSection(theme: theme, isDesktop: isDesktop),
                               SizedBox(height: isDesktop ? 56 : 36),
                               _CategoriesSection(theme: theme, isDesktop: isDesktop),
@@ -278,85 +278,115 @@ class _HeroSection extends StatelessWidget {
   }
 }
 
-class _SocialProofSection extends StatelessWidget {
+class _TrustedPartnersSection extends StatelessWidget {
   final ThemeData theme;
   final bool isDesktop;
 
-  const _SocialProofSection({required this.theme, required this.isDesktop});
+  const _TrustedPartnersSection({required this.theme, required this.isDesktop});
 
   @override
   Widget build(BuildContext context) {
     final scheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
-    final items = [
-      (icon: Icons.shopping_cart, label: 'Allegro', highlight: false),
-      (icon: Icons.shopping_cart, label: 'Amazon', highlight: false),
-      (icon: Icons.computer, label: 'Media Expert', highlight: false),
-      (icon: Icons.face_retouching_natural, label: 'Sephora', highlight: false),
-      (icon: Icons.checkroom, label: 'Zalando', highlight: false),
-      (icon: Icons.face_retouching_natural, label: 'Notino', highlight: false),
-      (icon: Icons.language, label: 'landing.social_proof_hundreds'.tr(), highlight: true),
+    final headingGreen = isDark ? const Color(0xFF81E39C) : const Color(0xFF1F7D3B);
+    final chipBorder = scheme.outline.withValues(alpha: isDark ? 0.34 : 0.2);
+    final chipBackground = scheme.surface.withValues(alpha: isDark ? 0.78 : 0.95);
+
+    const partners = [
+      'Allegro',
+      'Amazon',
+      'Media Expert',
+      'Sephora',
+      'Zalando',
+      'Notino',
     ];
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 24 : 16, vertical: isDesktop ? 18 : 14),
-      decoration: BoxDecoration(
-        color: scheme.surface.withValues(alpha: isDark ? 0.7 : 0.9),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: scheme.outline.withValues(alpha: isDark ? 0.44 : 0.28)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'landing.social_proof_title'.tr(),
-            textAlign: TextAlign.center,
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: scheme.onSurface,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Nasza sieć zaufanych partnerów globalnych i lokalnych:',
+          textAlign: TextAlign.center,
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w800,
+            color: headingGreen,
+            fontSize: isDesktop ? 34 : 24,
+            height: 1.2,
           ),
-          const SizedBox(height: 14),
-          Wrap(
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 14,
-            runSpacing: 12,
-            children: [
-              for (final item in items)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: item.highlight
-                        ? scheme.tertiary.withValues(alpha: isDark ? 0.24 : 0.14)
-                        : scheme.primary.withValues(alpha: isDark ? 0.18 : 0.1),
-                    borderRadius: BorderRadius.circular(999),
-                    border: Border.all(
-                      color: item.highlight
-                          ? scheme.tertiary.withValues(alpha: isDark ? 0.72 : 0.52)
-                          : scheme.outline.withValues(alpha: isDark ? 0.32 : 0.22),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        item.icon,
-                        size: 16,
-                        color: item.highlight ? scheme.tertiary : scheme.primary,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        item.label,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: item.highlight ? FontWeight.w700 : FontWeight.w600,
-                          color: scheme.onSurface,
-                        ),
-                      ),
-                    ],
-                  ),
+        ),
+        SizedBox(height: isDesktop ? 24 : 16),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            for (final partner in partners)
+              _PartnerChip(
+                label: partner,
+                borderColor: chipBorder,
+                backgroundColor: chipBackground,
+                textColor: scheme.onSurface,
+                isDesktop: isDesktop,
+              ),
+          ],
+        ),
+        SizedBox(height: isDesktop ? 20 : 14),
+        Text(
+          'i ponad 48 000 sklepów i platform e-commerce na całym świecie.',
+          textAlign: TextAlign.center,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: headingGreen,
+            fontWeight: FontWeight.w700,
+            height: 1.35,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PartnerChip extends StatelessWidget {
+  final String label;
+  final Color borderColor;
+  final Color backgroundColor;
+  final Color textColor;
+  final bool isDesktop;
+
+  const _PartnerChip({
+    required this.label,
+    required this.borderColor,
+    required this.backgroundColor,
+    required this.textColor,
+    required this.isDesktop,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: isDesktop ? 16 : 12,
+        vertical: isDesktop ? 10 : 8,
+      ),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: borderColor),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.storefront_outlined,
+            size: isDesktop ? 18 : 16,
+            color: textColor,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: textColor,
                 ),
-            ],
           ),
         ],
       ),
