@@ -152,5 +152,6 @@
     "tos_s3_2": "3.2. Im FREE-Plan wird der Preis einmal täglich (alle 24 Stunden) aktualisiert, etwa zu dem Zeitpunkt, zu dem das Produkt zur Datenbank hinzugefügt wurde.",
     "tos_ownership": "Der Eigentümer der Aura Catch-Website und -Anwendung ist Dariusz Szweda.",
     "tos_s3_title": "3. Abonnementregeln und -beschränkungen (KOSTENLOSER Plan)"
-  }
+  },
+  "no_link_available": "Kein Produktlink verfügbar."
 }

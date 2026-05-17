@@ -152,5 +152,6 @@
     "tos_s3_3": "3.3. Después de 30 días, el seguimiento finaliza y los datos históricos del producto se archivan de acuerdo con la Política de Privacidad.",
     "tos_s3_1": "3.1. Un usuario del plan GRATUITO puede realizar un seguimiento del producto durante 30 días desde el momento en que se agrega.",
     "tos_s3_title": "3. Reglas y límites de suscripción (Plan GRATUITO)"
-  }
+  },
+  "no_link_available": "No hay enlace de producto disponible."
 }

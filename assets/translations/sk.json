@@ -152,5 +152,6 @@
     "pp_s8_1": "8.1. Pre používateľov programu ZDARMA: Údaje týkajúce sa sledovaných produktov sa vymažú z databázy 30 dní po skončení obdobia sledovania.",
     "pp_s8_2": "Údaje o účte sú uložené, kým používateľ nepoužije funkciu „Vymazať účet a údaje“.",
     "tos_s3_1": "3.1. Používateľ programu ZDARMA môže sledovať produkt po dobu 30 dní od jeho pridania."
-  }
+  },
+  "no_link_available": "Žiadny odkaz na produkt."
 }

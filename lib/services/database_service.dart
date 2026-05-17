@@ -174,13 +174,36 @@ class DatabaseService {
         .select('id')
         .single();
 
+    final trackedItemId = inserted['id']?.toString();
+
     if (activePlan == 'FREE') {
-      final trackedItemId = inserted['id']?.toString();
       if (trackedItemId == null || trackedItemId.isEmpty) {
         throw Exception('Failed to resolve inserted tracked item id for quota ledger');
       }
       await _recordFreeQuotaEvent(userId: user.id, trackedItemId: trackedItemId);
     }
+
+    // Trigger immediate price crawl for the newly added item.
+    // Fire-and-forget: does not block the UI. The crawler bypasses the cooldown
+    // for on-demand requests so the user sees a real price quickly.
+    if (trackedItemId != null && trackedItemId.isNotEmpty) {
+      _triggerCrawlerForItem(trackedItemId);
+    }
+  }
+
+  /// Calls the price_crawler Edge Function with this specific item ID so that
+  /// the first price lookup happens immediately after the user adds a product,
+  /// instead of waiting for the next hourly cron cycle.
+  void _triggerCrawlerForItem(String itemId) {
+    _client.functions.invoke(
+      'price_crawler',
+      body: {'item_ids': [itemId]},
+    ).then((_) {
+      debugPrint('[Crawler] On-demand crawl triggered for item: $itemId');
+    }).catchError((Object err) {
+      // Non-fatal: the cron job will pick it up in the next cycle.
+      debugPrint('[Crawler] On-demand crawl failed (non-fatal): $err');
+    });
   }
 
   @visibleForTesting

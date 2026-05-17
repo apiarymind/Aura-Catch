@@ -152,5 +152,6 @@
     "pp_s8_title": "8. Hramba podatkov",
     "pp_s8_1": "8.1. Za uporabnike BREZPLAČNEGA paketa: Podatki o sledenih izdelkih se iz baze izbrišejo 30 dni po koncu obdobja sledenja.",
     "tos_s3_1": "3.1. Uporabnik BREZPLAČNEGA paketa lahko sledi izdelku 30 dni od trenutka, ko je bil dodan."
-  }
+  },
+  "no_link_available": "Ni na voljo povezave do izdelka."
 }

@@ -152,5 +152,6 @@
     "tos_s3_1": "3.1. Un utente del piano GRATUITO può monitorare il prodotto per 30 giorni dal momento in cui viene aggiunto.",
     "pp_s8_1": "8.1. Per gli utenti del piano GRATUITO: i dati relativi ai prodotti tracciati vengono cancellati dal database 30 giorni dopo la fine del periodo di tracciamento.",
     "tos_s3_3": "3.3. Dopo 30 giorni, il monitoraggio termina e i dati storici del prodotto vengono archiviati in conformità con l'Informativa sulla privacy."
-  }
+  },
+  "no_link_available": "Nessun link prodotto disponibile."
 }

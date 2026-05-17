@@ -152,6 +152,6 @@
     "pp_s8_1": "8.1. Para usuários do plano GRATUITO: Os dados referentes aos produtos rastreados são excluídos do banco de dados 30 dias após o término do período de rastreamento.",
     "tos_s3_title": "3. Regras e Limites de Assinatura (Plano GRATUITO)",
     "tos_s3_1": "3.1. Um usuário do plano GRATUITO pode acompanhar o produto por 30 dias a partir do momento em que ele é adicionado."
-  }
+  },
+  "no_link_available": "Nenhum link de produto disponível."
 }
-

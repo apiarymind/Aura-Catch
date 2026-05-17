@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'widgets/product_card.dart';
 import '../../providers/subscription_provider.dart';
@@ -192,26 +191,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
   }
 
-  Future<bool> _isCurrentUserFreePlan() async {
+  bool _isCurrentUserFreePlan() {
     if (kIsWeb) return false;
-
-    try {
-      final user = Supabase.instance.client.auth.currentUser;
-      if (user == null) {
-        return true;
-      }
-
-      final row = await Supabase.instance.client
-          .from('users')
-          .select('active_plan')
-          .eq('id', user.id)
-          .maybeSingle();
-
-      final activePlan = row?['active_plan']?.toString().toUpperCase() ?? 'FREE';
-      return activePlan == 'FREE';
-    } catch (_) {
-      return true;
-    }
+    return ref.read(subscriptionProvider).plan == AccountPlan.free;
   }
 
   Future<InterstitialAd?> _loadInterstitialAd() async {
@@ -252,13 +234,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Future<void> _primeInterstitial() async {
     if (kIsWeb) return;
-    final isFree = await _isCurrentUserFreePlan();
+    final isFree = _isCurrentUserFreePlan();
     if (!isFree) return;
     await _loadInterstitialAd();
   }
 
   Future<void> _showVisualSearchInterstitialIfNeeded() async {
-    final isFreePlan = await _isCurrentUserFreePlan();
+    final isFreePlan = _isCurrentUserFreePlan();
     if (kIsWeb || !isFreePlan) {
       return;
     }
@@ -509,7 +491,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isPro = ref.watch(subscriptionProvider) == AccountPlan.pro;
+    final isPro = ref.watch(subscriptionProvider).plan == AccountPlan.pro;
     final trackedItemsAsync = ref.watch(trackedItemsProvider);
 
     return Scaffold(

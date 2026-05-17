@@ -7,6 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/tracked_item.dart';
+import '../../models/item_scope_attributes.dart';
 import '../../providers/link_generator_provider.dart';
 import '../../providers/localization_provider.dart';
 import '../../providers/region_provider.dart';
@@ -68,18 +69,43 @@ class _AlertDetailsScreenState extends ConsumerState<AlertDetailsScreen> {
     final item = widget.item;
     if (item == null) return;
 
-    final region = ref.read(regionProvider);
-    final fallbackProductUrl = item.attributes['product_url']?.toString();
-    final link = ref.read(linkGeneratorServiceProvider).buildMonetizedLink(
+    // Parse scopes from JSONB attributes to find the best available URL.
+    final scopeAttrs = ItemScopeAttributes.fromAttributesMap(item.attributes);
+    final bestRawUrl = scopeAttrs.resolveBestBuyUrl() ?? item.productUrl;
+    final isGoogleShopping = scopeAttrs.bestUrlIsGoogleShopping();
+
+    Uri? launchUri;
+
+    if (bestRawUrl != null && bestRawUrl.isNotEmpty) {
+      if (isGoogleShopping) {
+        // Google Shopping URLs cannot be wrapped in CJ/affiliate links.
+        // Open directly so the user lands on the offer page.
+        debugPrint('[BuyNow] Google Shopping URL — opening directly: $bestRawUrl');
+        launchUri = Uri.tryParse(bestRawUrl);
+      } else {
+        // Attempt CJ/affiliate wrapping for known direct retailer URLs.
+        final region = ref.read(regionProvider);
+        final monetized = ref.read(linkGeneratorServiceProvider).buildMonetizedLink(
           storeName: item.storeName,
           region: region,
           brand: item.brand,
           model: item.model,
-          rawProductUrl: item.productUrl ?? fallbackProductUrl,
+          rawProductUrl: bestRawUrl,
         );
+        debugPrint('[BuyNow] Affiliate link: $monetized');
+        launchUri = monetized;
+      }
+    }
 
-    debugPrint('Opening affiliate link: $link');
-    final launched = await launchUrl(link, mode: LaunchMode.externalApplication);
+    if (launchUri == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(tr('no_link_available'))),
+      );
+      return;
+    }
+
+    final launched = await launchUrl(launchUri, mode: LaunchMode.externalApplication);
 
     if (!launched && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -88,13 +114,11 @@ class _AlertDetailsScreenState extends ConsumerState<AlertDetailsScreen> {
       return;
     }
 
-    if (!mounted) {
-      return;
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(strings.openingLink)),
+      );
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(strings.openingLink)),
-    );
   }
 
   Future<void> _deleteAlert(TrackedItem item) async {
@@ -151,13 +175,15 @@ class _AlertDetailsScreenState extends ConsumerState<AlertDetailsScreen> {
 
     final currentRegion = ref.watch(regionProvider);
     final currencyPrefix = currencyPrefixForRegion(currentRegion);
-    final isDeal = item.currentPrice != null && item.currentPrice! < item.targetPrice;
-    final saveAmount = isDeal ? item.targetPrice - item.currentPrice! : 0.0;
+    final displayedCurrentPrice = item.currentPrice ?? item.targetPrice;
+    final isDeal = displayedCurrentPrice < item.targetPrice;
+    final saveAmount = isDeal ? item.targetPrice - displayedCurrentPrice : 0.0;
     final localAddedAt = item.addedAt.toLocal();
     final addedLabel =
         '${localAddedAt.year.toString().padLeft(4, '0')}-${localAddedAt.month.toString().padLeft(2, '0')}-${localAddedAt.day.toString().padLeft(2, '0')}';
     final attributes = Map<String, dynamic>.from(item.attributes)
       ..removeWhere((key, value) => value == null || value.toString().trim().isEmpty);
+    final scopeAttrs = ItemScopeAttributes.fromAttributesMap(item.attributes);
 
     return Scaffold(
       appBar: AppBar(
@@ -196,26 +222,95 @@ class _AlertDetailsScreenState extends ConsumerState<AlertDetailsScreen> {
                   style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 8),
-                if (attributes.isEmpty)
+                if (scopeAttrs.isEmpty && attributes.isEmpty)
                   Text(tr('no_attributes_detected'), style: theme.textTheme.bodyMedium)
-                else
-                  ...attributes.entries.map(
-                    (entry) => Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Row(
-                        children: [
-                          Icon(Icons.tune, size: 16, color: colorScheme.primary),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              '${_formatKey(entry.key)}: ${entry.value}',
-                              style: theme.textTheme.bodyMedium,
-                            ),
+                else ...[
+                  // ── Scope cards (store_name, price, currency per scope) ──
+                  if (!scopeAttrs.isEmpty)
+                    ...scopeAttrs.displayableScopes.map((record) {
+                      final entry = record.entry;
+                      final scopeLabel = record.label.toUpperCase();
+                      final priceText = entry.originalPrice != null
+                          ? '${entry.originalPrice!.toStringAsFixed(2)} ${entry.originalCurrency}'
+                          : null;
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surface,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: colorScheme.outlineVariant),
                           ),
-                        ],
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                scopeLabel,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: colorScheme.primary,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              if (entry.storeName.isNotEmpty) ...
+                                [
+                                  const SizedBox(height: 2),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.store_outlined, size: 14, color: colorScheme.onSurfaceVariant),
+                                      const SizedBox(width: 6),
+                                      Expanded(
+                                        child: Text(
+                                          entry.storeName,
+                                          style: theme.textTheme.bodyMedium,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              if (priceText != null) ...
+                                [
+                                  const SizedBox(height: 2),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.price_change_outlined, size: 14, color: colorScheme.onSurfaceVariant),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        priceText,
+                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  // ── Other non-scope attributes (flat key-value pairs) ──
+                  ...attributes.entries
+                      .where((e) => e.key != 'scopes')
+                      .map(
+                        (entry) => Padding(
+                          padding: const EdgeInsets.only(bottom: 6),
+                          child: Row(
+                            children: [
+                              Icon(Icons.tune, size: 16, color: colorScheme.primary),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  '${_formatKey(entry.key)}: ${entry.value}',
+                                  style: theme.textTheme.bodyMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                ],
               ],
             ),
           ),
@@ -242,12 +337,10 @@ class _AlertDetailsScreenState extends ConsumerState<AlertDetailsScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        item.currentPrice == null
-                            ? tr('current_price_pending')
-                            : tr(
-                                'current_price_label_with_value',
-                                namedArgs: {'price': '$currencyPrefix${item.currentPrice!.toStringAsFixed(2)}'},
-                              ),
+                        tr(
+                          'current_price_label_with_value',
+                          namedArgs: {'price': '$currencyPrefix${displayedCurrentPrice.toStringAsFixed(2)}'},
+                        ),
                         style: theme.textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.w700,
                           color: isDeal ? colorScheme.primary : colorScheme.onSurface,

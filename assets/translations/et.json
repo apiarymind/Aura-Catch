@@ -152,5 +152,6 @@
     "pp_s8_1": "8.1. TASUTA paketi kasutajatele: andmed jälgitavate toodete kohta kustutatakse andmebaasist 30 päeva pärast jälgimisperioodi lõppu.",
     "pp_s8_title": "8. Andmete säilitamine",
     "tos_ownership": "Aura Catchi veebisaidi ja rakenduse omanik on Dariusz Szweda."
-  }
+  },
+  "no_link_available": "Tootelink pole saadaval."
 }

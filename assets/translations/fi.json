@@ -152,5 +152,6 @@
     "pp_s8_title": "8. Tietojen säilyttäminen",
     "pp_s8_1": "8.1. ILMAISEN suunnitelman käyttäjille: Seurattuja tuotteita koskevat tiedot poistetaan tietokannasta 30 päivän kuluttua seurantajakson päättymisestä.",
     "pp_s8_2": "Tilitietoja säilytetään, kunnes käyttäjä käyttää \"Poista tili ja tiedot\" -toimintoa."
-  }
+  },
+  "no_link_available": "Ei tuotelinkkiä saatavilla."
 }

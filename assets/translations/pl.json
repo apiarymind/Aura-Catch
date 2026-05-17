@@ -1,4 +1,4 @@
-{
+﻿{
   "edit_details": "Potwierdź i edytuj szczegóły",
   "brand": "Marka",
   "model": "Model",
@@ -152,5 +152,6 @@
     "pp_s8_title": "8. Retencja danych",
     "pp_s8_1": "8.1. Dla użytkowników planu FREE: Dane dotyczące śledzonych produktów są usuwane z bazy po 30 dniach od zakończenia okresu śledzenia.",
     "pp_s8_2": "Dane konta są przechowywane do momentu skorzystania przez użytkownika z funkcji \"Usuń konto i dane\"."
-  }
+  },
+  "no_link_available": "Brak dostępnego linku do produktu."
 }

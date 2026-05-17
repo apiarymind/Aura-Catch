@@ -7,6 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../models/tracked_item.dart';
+import '../../../models/item_scope_attributes.dart';
 import '../../../providers/link_generator_provider.dart';
 import '../../../providers/localization_provider.dart';
 import '../../../providers/region_provider.dart';
@@ -71,18 +72,40 @@ class ProductCard extends ConsumerWidget {
       return;
     }
 
-    final region = ref.read(regionProvider);
-    final fallbackProductUrl = item.attributes['product_url']?.toString();
-    final link = ref.read(linkGeneratorServiceProvider).buildMonetizedLink(
+    // Parse scopes from JSONB attributes to find the best available URL.
+    final scopeAttrs = ItemScopeAttributes.fromAttributesMap(item.attributes);
+    final bestRawUrl = scopeAttrs.resolveBestBuyUrl() ?? item.productUrl;
+    final isGoogleShopping = scopeAttrs.bestUrlIsGoogleShopping();
+
+    Uri? launchUri;
+
+    if (bestRawUrl != null && bestRawUrl.isNotEmpty) {
+      if (isGoogleShopping) {
+        debugPrint('[BuyNow] Google Shopping URL — opening directly: $bestRawUrl');
+        launchUri = Uri.tryParse(bestRawUrl);
+      } else {
+        final region = ref.read(regionProvider);
+        launchUri = ref.read(linkGeneratorServiceProvider).buildMonetizedLink(
           storeName: item.storeName,
           region: region,
           brand: item.brand,
           model: item.model,
-          rawProductUrl: item.productUrl ?? fallbackProductUrl,
+          rawProductUrl: bestRawUrl,
         );
+        debugPrint('[BuyNow] Affiliate link: $launchUri');
+      }
+    }
 
-    debugPrint('Opening affiliate link: $link');
-    final launched = await launchUrl(link, mode: LaunchMode.externalApplication);
+    if (launchUri == null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(_t('no_link_available'))),
+        );
+      }
+      return;
+    }
+
+    final launched = await launchUrl(launchUri, mode: LaunchMode.externalApplication);
 
     if (!launched && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -91,13 +114,11 @@ class ProductCard extends ConsumerWidget {
       return;
     }
 
-    if (!context.mounted) {
-      return;
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(strings.openingLink)),
+      );
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(strings.openingLink)),
-    );
   }
 
   @override
@@ -106,11 +127,12 @@ class ProductCard extends ConsumerWidget {
     final colorScheme = theme.colorScheme;
     final currentRegion = ref.watch(regionProvider);
     final currencyPrefix = currencyPrefixForRegion(currentRegion);
-    final plan = ref.watch(subscriptionProvider);
+    final plan = ref.watch(subscriptionProvider).plan;
     final isFreePlan = plan == AccountPlan.free;
     final isLocked = item.status.toUpperCase() == 'LOCKED';
-    final isDeal = item.currentPrice != null && item.currentPrice! < item.targetPrice;
-    final saveAmount = isDeal ? (item.targetPrice - item.currentPrice!) : 0.0;
+    final displayedCurrentPrice = item.currentPrice ?? item.targetPrice;
+    final isDeal = displayedCurrentPrice < item.targetPrice;
+    final saveAmount = isDeal ? (item.targetPrice - displayedCurrentPrice) : 0.0;
 
     final trackingDuration = DateTime.now().toUtc().difference(item.addedAt.toUtc());
     final trackingDays = trackingDuration.inDays;
@@ -188,9 +210,7 @@ class ProductCard extends ConsumerWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            item.currentPrice == null
-                                ? _t('pending_label')
-                                : '$currencyPrefix${item.currentPrice!.toStringAsFixed(2)}',
+                            '$currencyPrefix${displayedCurrentPrice.toStringAsFixed(2)}',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w800,
                               color: isDeal ? colorScheme.primary : colorScheme.onSurface,

@@ -152,6 +152,6 @@
     "tos_s3_2": "3.2. I GRATIS-planen oppdateres prisen en gang i døgnet (hver 24. time), rundt tidspunktet da produktet ble lagt til databasen.",
     "tos_s3_1": "3.1. En GRATIS planbruker kan spore produktet i 30 dager fra det er lagt til.",
     "pp_s8_1": "8.1. For brukere av GRATIS abonnement: Data om sporede produkter slettes fra databasen 30 dager etter slutten av sporingsperioden."
-  }
+  },
+  "no_link_available": "Ingen produktlenke tilgjengelig."
 }
-

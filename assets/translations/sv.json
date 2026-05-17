@@ -152,5 +152,6 @@
     "tos_s3_3": "3.3. Efter 30 dagar upphör spårningen och historisk produktdata arkiveras i enlighet med integritetspolicyn.",
     "pp_s8_1": "8.1. För användare med GRATIS plan: Data om spårade produkter raderas från databasen 30 dagar efter spårningsperiodens slut.",
     "tos_s3_1": "3.1. En GRATIS plananvändare kan spåra produkten i 30 dagar från det att den läggs till."
-  }
+  },
+  "no_link_available": "Ingen produktlänk tillgänglig."
 }

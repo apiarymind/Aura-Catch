@@ -152,5 +152,6 @@
     "tos_s3_2": "3.2. V plánu ZDARMA se cena aktualizuje jednou denně (každých 24 hodin), přibližně v době, kdy byl produkt přidán do databáze.",
     "tos_s3_title": "3. Pravidla a limity předplatného (tarif ZDARMA)",
     "pp_s8_2": "Údaje o účtu jsou uloženy, dokud uživatel nepoužije funkci „Smazat účet a data“."
-  }
+  },
+  "no_link_available": "Žádný odkaz na produkt."
 }

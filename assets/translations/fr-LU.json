@@ -152,5 +152,6 @@
     "tos_ownership": "Le propriétaire du site Web et de l'application Aura Catch est Dariusz Szweda.",
     "tos_s3_2": "3.2. Dans le plan GRATUIT, le prix est mis à jour une fois par jour (toutes les 24 heures), à peu près au moment où le produit a été ajouté à la base de données.",
     "tos_s3_1": "3.1. Un utilisateur du forfait GRATUIT peut suivre le produit pendant 30 jours à compter de son ajout."
-  }
+  },
+  "no_link_available": "Aucun lien produit disponible."
 }

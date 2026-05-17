@@ -152,6 +152,6 @@
     "pp_s8_1": "8.1. Za korisnike BESPLATNOG plana: Podaci o praćenim proizvodima brišu se iz baze podataka 30 dana nakon završetka razdoblja praćenja.",
     "tos_s3_1": "3.1. Korisnik BESPLATNOG plana može pratiti proizvod 30 dana od trenutka dodavanja.",
     "tos_s3_2": "3.2. U BESPLATNOM planu, cijena se ažurira jednom dnevno (svaka 24 sata), otprilike u vrijeme kada je proizvod dodan u bazu podataka."
-  }
+  },
+  "no_link_available": "Nema dostupne veze na proizvod."
 }
-
