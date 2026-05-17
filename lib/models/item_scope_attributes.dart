@@ -1,12 +1,12 @@
-/// Modele do parsowania JSONB z pola `attributes.scopes` w tabeli tracked_items.
-/// Struktura bazy:
-/// attributes: {
-///   scopes: {
-///     local:  { link, store_url, store_name, original_price, original_currency, converted_price }
-///     eu:     { ... }
-///     global: { ... }
-///   }
-/// }
+// Modele do parsowania JSONB z pola `attributes.scopes` w tabeli tracked_items.
+// Struktura bazy:
+// attributes: {
+//   scopes: {
+//     local:  { link, store_url, store_name, original_price, original_currency, converted_price }
+//     eu:     { ... }
+//     global: { ... }
+//   }
+// }
 
 class ScopeEntry {
   final String link;
@@ -67,18 +67,18 @@ class ItemScopeAttributes {
     if (rawScopes == null || rawScopes is! Map) {
       return const ItemScopeAttributes();
     }
-    final scopes = Map<String, dynamic>.from(rawScopes as Map);
+    final scopes = Map<String, dynamic>.from(rawScopes);
 
-    ScopeEntry? _parse(String key) {
+    ScopeEntry? parseScope(String key) {
       final raw = scopes[key];
       if (raw == null || raw is! Map) return null;
-      return ScopeEntry.fromJson(Map<String, dynamic>.from(raw as Map));
+      return ScopeEntry.fromJson(Map<String, dynamic>.from(raw));
     }
 
     return ItemScopeAttributes(
-      local: _parse('local'),
-      eu: _parse('eu'),
-      global: _parse('global'),
+      local: parseScope('local'),
+      eu: parseScope('eu'),
+      global: parseScope('global'),
     );
   }
 

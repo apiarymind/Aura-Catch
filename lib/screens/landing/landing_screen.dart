@@ -305,7 +305,7 @@ class _TrustedPartnersSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Nasza sieć zaufanych partnerów globalnych i lokalnych:',
+          'landing.trusted_partners_title'.tr(),
           textAlign: TextAlign.center,
           style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.w800,
@@ -332,7 +332,7 @@ class _TrustedPartnersSection extends StatelessWidget {
         ),
         SizedBox(height: isDesktop ? 20 : 14),
         Text(
-          'i ponad 48 000 sklepów i platform e-commerce na całym świecie.',
+          'landing.trusted_partners_subtitle'.tr(),
           textAlign: TextAlign.center,
           style: theme.textTheme.titleMedium?.copyWith(
             color: headingGreen,
@@ -1502,7 +1502,7 @@ class _Footer extends StatelessWidget {
             runSpacing: 8,
             children: [
               Text(
-                '© ${DateTime.now().year} Aura Catch. Wszelkie prawa zastrzeżone.',
+                'landing.footer_copyright'.tr(args: ['${DateTime.now().year}']),
                 style: theme.textTheme.bodySmall?.copyWith(color: tokens.footerText),
               ),
               Wrap(
@@ -1511,12 +1511,12 @@ class _Footer extends StatelessWidget {
                   TextButton(
                     style: TextButton.styleFrom(foregroundColor: tokens.footerLink),
                     onPressed: () => context.go('/privacy-policy'),
-                    child: const Text('Polityka Prywatności'),
+                    child: Text('landing.footer_privacy'.tr()),
                   ),
                   TextButton(
                     style: TextButton.styleFrom(foregroundColor: tokens.footerLink),
                     onPressed: () => context.go('/terms-of-service'),
-                    child: const Text('Regulamin'),
+                    child: Text('landing.footer_terms'.tr()),
                   ),
                 ],
               ),

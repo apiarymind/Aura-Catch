@@ -46,7 +46,7 @@ void main() async {
     });
 
     await file.writeAsString(const JsonEncoder.withIndent('  ').convert(localized));
-    print('Generated ${file.path}');
+    stdout.writeln('Generated ${file.path}');
   }
-  print('Successfully generated all 31 translation files!');
+  stdout.writeln('Successfully generated all 31 translation files!');
 }

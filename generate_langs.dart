@@ -95,7 +95,7 @@ void main() async {
   Future<void> writeJsonFile(String name, Map<String, String> data) async {
     final file = File('${targetDir.path}/$name.json');
     await file.writeAsString(const JsonEncoder.withIndent('  ').convert(data));
-    print('Generated: ${file.absolute.path}');
+    stdout.writeln('Generated: ${file.absolute.path}');
   }
 
   for (final locale in locales) {
@@ -122,5 +122,5 @@ void main() async {
       await writeJsonFile(baseLang, finalizedTranslation);
     }
   }
-  print('\nSuccessfully generated all localization files (including Underscore & Base Fallbacks)!');
+  stdout.writeln('\nSuccessfully generated all localization files (including Underscore & Base Fallbacks)!');
 }

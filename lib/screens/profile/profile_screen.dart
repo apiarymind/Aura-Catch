@@ -236,7 +236,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with WidgetsBindi
                   subtitle: Text(strings.immediateAlertsDesc, style: const TextStyle(fontSize: 12)),
                   value: notifications.immediateAlerts,
                   onChanged: (val) => ref.read(notificationProvider.notifier).toggleImmediateAlerts(val),
-                  activeColor: themeData.primaryColor,
+                  activeThumbColor: themeData.primaryColor,
                 ),
                 const Divider(height: 1),
                 SwitchListTile(
@@ -244,7 +244,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with WidgetsBindi
                   subtitle: Text(strings.dailySummaryDesc, style: const TextStyle(fontSize: 12)),
                   value: notifications.dailySummary,
                   onChanged: (val) => ref.read(notificationProvider.notifier).toggleDailySummary(val),
-                  activeColor: themeData.primaryColor,
+                  activeThumbColor: themeData.primaryColor,
                 ),
                 if (notifications.dailySummary) ...[
                   const Divider(height: 1),
@@ -289,7 +289,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with WidgetsBindi
           Text(strings.regionLanguage, style: themeData.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            value: currentRegion,
+            initialValue: currentRegion,
             isExpanded: true,
             decoration: InputDecoration(
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -431,13 +431,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with WidgetsBindi
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: isSelected
-                ? themeData.primaryColor.withOpacity(0.08)
+                ? themeData.primaryColor.withValues(alpha: 0.08)
                 : themeData.cardColor,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: isSelected
                   ? themeData.primaryColor
-                  : themeData.dividerColor.withOpacity(0.5),
+                  : themeData.dividerColor.withValues(alpha: 0.5),
               width: isSelected ? 2 : 1,
             ),
           ),
